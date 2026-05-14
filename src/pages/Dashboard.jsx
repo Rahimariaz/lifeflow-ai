@@ -1,234 +1,447 @@
+import { useState } from "react";
 import {
-  HiSparkles,
-  HiBell,
-  HiChartBar,
-  HiClipboardList,
-  HiCalendar,
-  HiLightningBolt,
-  HiHand,
-} from "react-icons/hi"
+  Brain,
+  Activity,
+  Zap,
+  Calendar,
+  Bell,
+  Settings,
+  
+  CheckCircle,
+  LayoutDashboard,
+  Moon,
+  Smile,
+} from "lucide-react";
 
-function Dashboard() {
+export default function Dashboard() {
+  // INPUT STATES
+  const [tasks, setTasks] = useState("");
+  const [sleep, setSleep] = useState("");
+  const [mood, setMood] = useState("");
+
+  // OUTPUT STATES
+  const [stress, setStress] = useState(30);
+  const [productivity, setProductivity] = useState(85);
+  const [summary, setSummary] = useState(
+    "Your AI productivity overview is ready."
+  );
+
+  const [activeCard, setActiveCard] = useState("dashboard");
+
+  // AI ANALYSIS
+  const analyzeProductivity = () => {
+    let stressScore = 20;
+    let productivityScore = 95;
+    let aiSummary = "";
+
+    // TASK ANALYSIS
+    if (tasks >= 10) {
+      stressScore += 40;
+      productivityScore -= 30;
+    } else if (tasks >= 6) {
+      stressScore += 20;
+      productivityScore -= 10;
+    }
+
+    // SLEEP ANALYSIS
+    if (sleep < 5) {
+      stressScore += 35;
+      productivityScore -= 25;
+    } else if (sleep < 7) {
+      stressScore += 15;
+      productivityScore -= 10;
+    }
+
+    // MOOD ANALYSIS
+    if (mood === "bad") {
+      stressScore += 25;
+      productivityScore -= 20;
+    } else if (mood === "normal") {
+      stressScore += 10;
+    } else if (mood === "good") {
+      productivityScore += 10;
+    }
+
+    // LIMIT VALUES
+    if (stressScore > 100) stressScore = 100;
+    if (productivityScore > 100) productivityScore = 100;
+    if (productivityScore < 0) productivityScore = 0;
+
+    // AI SUMMARY
+    if (stressScore >= 75) {
+      aiSummary =
+        "High stress detected. Take breaks and focus on fewer tasks.";
+    } else if (stressScore >= 50) {
+      aiSummary =
+        "Moderate stress detected. Maintain balance and manage your time carefully.";
+    } else {
+      aiSummary =
+        "Excellent productivity detected. Your workflow looks balanced and healthy.";
+    }
+
+    setStress(stressScore);
+    setProductivity(productivityScore);
+    setSummary(aiSummary);
+
+    // AUTO OPEN SUMMARY
+    setActiveCard("summary");
+  };
+
   return (
-  <div className="min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-[#050816] via-[#0B1020] to-[#111827] text-white overflow-hidden relative">
+    <div className="min-h-screen flex bg-gradient-to-br from-[#050816] via-[#0B1020] to-[#111827] text-white overflow-hidden">
 
-      {/* Background Glow Effects */}
-      <div className="absolute top-0 left-0 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl"></div>
+      {/* SIDEBAR */}
+      <div className="w-72 bg-white/5 backdrop-blur-2xl border-r border-white/10 p-6">
 
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl"></div>
-
-      <div className="absolute top-40 left-[40%] w-72 h-72 bg-pink-500/10 rounded-full blur-3xl"></div>
-
-      {/* Sidebar */}
-      <div className="w-full md:w-72 bg-white/5 backdrop-blur-xl border-r border-white/10 p-8 z-10">
-
-        <h1 className="text-4xl font-extrabold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+        <h1 className="text-4xl font-extrabold mb-12 bg-gradient-to-r from-pink-400 to-purple-400 text-transparent bg-clip-text">
           LifeFlow AI
         </h1>
 
-        <ul className="mt-14 space-y-5 text-gray-300 text-lg">
+        <div className="space-y-4">
 
-          <li className="flex items-center gap-4 hover:bg-white/10 px-4 py-4 rounded-2xl hover:text-purple-400 transition duration-300 cursor-pointer">
-            📊 Dashboard
-          </li>
+          <SidebarButton
+            icon={<LayoutDashboard />}
+            title="Dashboard"
+            onClick={() => setActiveCard("dashboard")}
+          />
 
-          <li className="flex items-center gap-4 hover:bg-white/10 px-4 py-4 rounded-2xl hover:text-pink-400 transition duration-300 cursor-pointer">
-            🧠 Analysis
-          </li>
+          <SidebarButton
+            icon={<Brain />}
+            title="AI Summary"
+            onClick={() => setActiveCard("summary")}
+          />
 
-          <li className="flex items-center gap-4 hover:bg-white/10 px-4 py-4 rounded-2xl hover:text-blue-400 transition duration-300 cursor-pointer">
-            📅 Planner
-          </li>
+          <SidebarButton
+            icon={<Activity />}
+            title="Stress Level"
+            onClick={() => setActiveCard("stress")}
+          />
 
-          <li className="flex items-center gap-4 hover:bg-white/10 px-4 py-4 rounded-2xl hover:text-gray-100 transition duration-300 cursor-pointer">
-            ⚙ Settings
-          </li>
+          <SidebarButton
+            icon={<Zap />}
+            title="Productivity"
+            onClick={() => setActiveCard("productivity")}
+          />
 
-        </ul>
+          <SidebarButton
+            icon={<CheckCircle />}
+            title="Tasks"
+            onClick={() => setActiveCard("tasks")}
+          />
 
+          <SidebarButton
+            icon={<Calendar />}
+            title="Planner"
+            onClick={() => setActiveCard("planner")}
+          />
+
+          <SidebarButton
+            icon={<Bell />}
+            title="Notifications"
+            onClick={() => setActiveCard("notifications")}
+          />
+
+          <SidebarButton
+            icon={<Settings />}
+            title="Settings"
+            onClick={() => setActiveCard("settings")}
+          />
+        </div>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 p-10 z-10">
+      {/* MAIN CONTENT */}
+      <div className="flex-1 p-10 overflow-y-auto">
 
-        {/* Navbar */}
-        <div className="flex justify-between items-center">
+        {/* HEADER */}
+        <div className="mb-12">
 
-          <h1 className="text-3xl font-bold">
-            Dashboard
+          <h1 className="text-6xl font-extrabold mb-4 bg-gradient-to-r from-purple-300 to-pink-300 text-transparent bg-clip-text">
+            Welcome Back 👋
           </h1>
 
-          <button className="bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-3 rounded-2xl shadow-lg shadow-purple-500/30 hover:scale-105 transition duration-300">
-            Profile
-          </button>
-
-        </div>
-
-        {/* Welcome Section */}
-        <div className="mt-14">
-
-          <h1 className="text-6xl font-extrabold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent flex items-center gap-4">
-
-            Welcome Back
-
-            <HiHand className="text-yellow-400 animate-bounce" />
-
-          </h1>
-
-          <p className="text-gray-400 mt-5 text-xl">
-            Your AI productivity overview is ready.
+          <p className="text-gray-400 text-lg">
+            Your intelligent AI productivity assistant is ready.
           </p>
-
         </div>
 
-        {/* Dashboard Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-14">
-          {/* AI Summary */}
-          <div className="bg-white/5 backdrop-blur-xl border border-pink-400/20 hover:border-pink-400/40 p-8 rounded-3xl shadow-[0_0_25px_rgba(236,72,153,0.15)] hover:scale-105 hover:-translate-y-2 transition-all duration-300">
+        {/* INPUT SECTION */}
+        <div className="grid md:grid-cols-3 gap-8 mb-10">
 
-            <h2 className="text-2xl font-semibold flex items-center gap-3">
-              <HiSparkles className="text-pink-400" />
-              AI Summary
-            </h2>
-
-            <p className="mt-5 text-gray-400">
-              Your workflow looks highly productive today.
-            </p>
-
-            <div className="mt-6 bg-white/10 p-4 rounded-2xl text-sm text-gray-300">
-              ⚡ AI suggests focusing on high-priority tasks first.
+          {/* TASK INPUT */}
+          <GlassCard>
+            <div className="flex items-center gap-3 mb-5">
+              <CheckCircle className="text-blue-400" />
+              <h2 className="text-2xl font-bold">
+                Daily Tasks
+              </h2>
             </div>
 
-          </div>
+            <input
+              type="number"
+              placeholder="Enter number of tasks"
+              value={tasks}
+              onChange={(e) => setTasks(e.target.value)}
+              className="w-full p-4 rounded-2xl bg-black/30 border border-white/10 outline-none"
+            />
+          </GlassCard>
 
-          {/* Stress Level */}
-          <div className="bg-white/5 backdrop-blur-xl border border-yellow-400/20 hover:border-yellow-400/40 p-8 rounded-3xl shadow-[0_0_25px_rgba(250,204,21,0.15)] hover:scale-105 hover:-translate-y-2 transition-all duration-300">
-
-            <h2 className="text-2xl font-semibold flex items-center gap-3">
-              <HiChartBar className="text-yellow-400" />
-              Stress Level
-            </h2>
-
-            <p className="mt-5 text-gray-400">
-              Moderate stress detected.
-            </p>
-
-            <div className="w-full bg-white/10 rounded-full h-3 mt-6">
-              <div className="bg-yellow-400 h-3 rounded-full w-[65%]"></div>
+          {/* SLEEP INPUT */}
+          <GlassCard>
+            <div className="flex items-center gap-3 mb-5">
+              <Moon className="text-indigo-400" />
+              <h2 className="text-2xl font-bold">
+                Sleep Hours
+              </h2>
             </div>
 
-            <p className="mt-3 text-yellow-400 font-semibold">
-              Stress Level: 65%
-            </p>
+            <input
+              type="number"
+              placeholder="Enter sleep hours"
+              value={sleep}
+              onChange={(e) => setSleep(e.target.value)}
+              className="w-full p-4 rounded-2xl bg-black/30 border border-white/10 outline-none"
+            />
+          </GlassCard>
 
-          </div>
-
-          {/* Tasks */}
-          <div className="bg-white/5 backdrop-blur-xl border border-green-400/20 hover:border-green-400/40 p-8 rounded-3xl shadow-[0_0_25px_rgba(74,222,128,0.15)] hover:scale-105 hover:-translate-y-2 transition-all duration-300">
-
-            <h2 className="text-2xl font-semibold flex items-center gap-3">
-              <HiClipboardList className="text-green-400" />
-              Tasks
-            </h2>
-
-            <div className="mt-5 space-y-4">
-
-              <div className="bg-white/5 p-4 rounded-2xl">
-                📌 Finish dashboard UI
-              </div>
-
-              <div className="bg-white/5 p-4 rounded-2xl">
-                📌 Prepare hackathon presentation
-              </div>
-
-              <div className="bg-white/5 p-4 rounded-2xl">
-                📌 Connect Gemini API
-              </div>
-
+          {/* MOOD INPUT */}
+          <GlassCard>
+            <div className="flex items-center gap-3 mb-5">
+              <Smile className="text-pink-400" />
+              <h2 className="text-2xl font-bold">
+                Mood
+              </h2>
             </div>
 
-          </div>
-
-          {/* Notifications */}
-          <div className="bg-white/5 backdrop-blur-xl border border-orange-400/20 hover:border-orange-400/40 p-8 rounded-3xl shadow-[0_0_25px_rgba(251,146,60,0.15)] hover:scale-105 hover:-translate-y-2 transition-all duration-300">
-
-            <h2 className="text-2xl font-semibold flex items-center gap-3">
-              <HiBell className="text-orange-400" />
-              Notifications
-            </h2>
-
-            <div className="mt-5 space-y-3">
-
-              <div className="bg-white/5 p-3 rounded-xl text-gray-300 text-sm">
-                ⚡ AI suggests a short break in 20 mins
-              </div>
-
-              <div className="bg-white/5 p-3 rounded-xl text-gray-300 text-sm">
-                📅 Meeting starts at 4 PM
-              </div>
-
-              <div className="bg-white/5 p-3 rounded-xl text-gray-300 text-sm">
-                🔥 Productivity increased by 12%
-              </div>
-
-            </div>
-
-          </div>
-
-          {/* Planner */}
-          <div className="bg-white/5 backdrop-blur-xl border border-purple-400/40 p-8 rounded-3xl shadow-[0_0_35px_rgba(168,85,247,0.25)] hover:scale-105 hover:-translate-y-2 transition-all duration-300">
-
-            <h2 className="text-2xl font-semibold flex items-center gap-3">
-              <HiCalendar className="text-blue-400" />
-              Planner
-            </h2>
-
-            <div className="mt-5 space-y-4 text-gray-300">
-
-              <div className="bg-white/5 p-4 rounded-2xl">
-                🕘 Team Meeting — 10 AM
-              </div>
-
-              <div className="bg-white/5 p-4 rounded-2xl">
-                💻 Coding Session — 1 PM
-              </div>
-
-              <div className="bg-white/5 p-4 rounded-2xl">
-                🎤 Demo Practice — 5 PM
-              </div>
-
-            </div>
-
-          </div>
-
-          {/* Productivity Score */}
-          <div className="bg-white/5 backdrop-blur-xl border border-purple-400/20 hover:border-purple-400/40 p-8 rounded-3xl shadow-[0_0_25px_rgba(168,85,247,0.15)] hover:scale-105 hover:-translate-y-2 transition-all duration-300">
-
-            <h2 className="text-2xl font-semibold flex items-center gap-3">
-              <HiLightningBolt className="text-purple-400" />
-              Productivity Score
-            </h2>
-
-            <p className="mt-5 text-gray-400">
-              AI detected excellent productivity today.
-            </p>
-
-            <div className="w-full bg-white/10 rounded-full h-3 mt-6">
-              <div className="bg-purple-400 h-3 rounded-full w-[92%]"></div>
-            </div>
-
-            <p className="mt-3 text-purple-400 font-semibold">
-              Productivity Score: 92%
-            </p>
-
-          </div>
-
+            <select
+              value={mood}
+              onChange={(e) => setMood(e.target.value)}
+              className="w-full p-4 rounded-2xl bg-black/30 border border-white/10 outline-none"
+            >
+              <option value="">Select Mood</option>
+              <option value="good">Good 😊</option>
+              <option value="normal">Normal 😐</option>
+              <option value="bad">Bad 😔</option>
+            </select>
+          </GlassCard>
         </div>
 
+        {/* ANALYZE BUTTON */}
+        <button
+          onClick={analyzeProductivity}
+          className="bg-gradient-to-r from-purple-600 to-pink-600 hover:scale-105 transition duration-300 px-10 py-5 rounded-3xl text-xl font-bold shadow-2xl mb-12"
+        >
+          Analyze Productivity
+        </button>
+
+        {/* OUTPUT CARDS */}
+        <div className="grid md:grid-cols-3 gap-8 mb-12">
+
+          {/* AI SUMMARY */}
+          <OutputCard
+            title="AI Summary"
+            icon={<Brain size={42} className="text-pink-400" />}
+            color="from-pink-500/20 to-purple-500/20"
+            onClick={() => setActiveCard("summary")}
+          >
+            <p className="text-lg leading-8">
+              {summary}
+            </p>
+          </OutputCard>
+
+          {/* STRESS */}
+          <OutputCard
+            title="Stress Level"
+            icon={<Activity size={42} className="text-yellow-400" />}
+            color="from-yellow-500/20 to-orange-500/20"
+            onClick={() => setActiveCard("stress")}
+          >
+            <ProgressBar value={stress} color="bg-yellow-400" />
+            <p className="text-lg mt-4">
+              {stress}% Stress
+            </p>
+          </OutputCard>
+
+          {/* PRODUCTIVITY */}
+          <OutputCard
+            title="Productivity"
+            icon={<Zap size={42} className="text-green-400" />}
+            color="from-green-500/20 to-emerald-500/20"
+            onClick={() => setActiveCard("productivity")}
+          >
+            <ProgressBar
+              value={productivity}
+              color="bg-green-400"
+            />
+
+            <p className="text-lg mt-4">
+              {productivity}% Productivity
+            </p>
+          </OutputCard>
+        </div>
+
+        {/* DETAILS SECTION */}
+        <div className="bg-white/10 backdrop-blur-2xl border border-white/10 rounded-[40px] p-10 shadow-2xl min-h-[350px]">
+
+          <h2 className="text-5xl font-extrabold mb-8 capitalize bg-gradient-to-r from-purple-300 to-pink-300 text-transparent bg-clip-text">
+            {activeCard} Details
+          </h2>
+
+          {activeCard === "dashboard" && (
+            <div className="space-y-5 text-xl text-gray-300">
+              <p>
+                Welcome to your AI-powered smart productivity dashboard.
+              </p>
+
+              <p>
+                Enter your daily workload, sleep hours, and mood
+                to get intelligent AI analysis.
+              </p>
+            </div>
+          )}
+
+          {activeCard === "summary" && (
+            <div className="space-y-6">
+              <p className="text-3xl leading-[60px] text-pink-200">
+                {summary}
+              </p>
+            </div>
+          )}
+
+          {activeCard === "stress" && (
+            <div className="space-y-6">
+              <p className="text-3xl">
+                Current Stress Level: {stress}%
+              </p>
+
+              <ProgressBar
+                value={stress}
+                color="bg-yellow-400"
+              />
+
+              <p className="text-gray-300 text-lg">
+                AI analyzes workload pressure, emotional state,
+                and sleep quality to estimate stress level.
+              </p>
+            </div>
+          )}
+
+          {activeCard === "productivity" && (
+            <div className="space-y-6">
+              <p className="text-3xl">
+                Productivity Score: {productivity}%
+              </p>
+
+              <ProgressBar
+                value={productivity}
+                color="bg-green-400"
+              />
+
+              <p className="text-gray-300 text-lg">
+                Productivity is calculated based on energy,
+                sleep balance, and task management.
+              </p>
+            </div>
+          )}
+
+          {activeCard === "tasks" && (
+            <div className="space-y-5">
+              <p className="text-3xl">
+                Total Tasks: {tasks || 0}
+              </p>
+
+              <p className="text-gray-300 text-lg">
+                Managing too many tasks can reduce productivity
+                and increase stress.
+              </p>
+            </div>
+          )}
+
+          {activeCard === "planner" && (
+            <div>
+              <ul className="space-y-5 text-xl text-gray-300">
+                <li>✅ Prioritize important tasks first</li>
+                <li>✅ Maintain proper sleep schedule</li>
+                <li>✅ Reduce multitasking overload</li>
+                <li>✅ Take small breaks for better focus</li>
+              </ul>
+            </div>
+          )}
+
+          {activeCard === "notifications" && (
+            <div>
+              <p className="text-2xl">
+                🔔 No new notifications available.
+              </p>
+            </div>
+          )}
+
+          {activeCard === "settings" && (
+            <div>
+              <p className="text-2xl">
+                ⚙️ Settings panel coming soon.
+              </p>
+            </div>
+          )}
+        </div>
       </div>
-
     </div>
-  )
+  );
 }
 
-export default Dashboard
+// SIDEBAR BUTTON
+function SidebarButton({ icon, title, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className="flex items-center gap-4 w-full p-4 rounded-2xl bg-white/5 hover:bg-purple-500/20 hover:scale-105 transition duration-300"
+    >
+      {icon}
+      <span className="text-lg">{title}</span>
+    </button>
+  );
+}
+
+// GLASS CARD
+function GlassCard({ children }) {
+  return (
+    <div className="bg-white/10 backdrop-blur-2xl p-8 rounded-[32px] border border-white/10 shadow-2xl hover:scale-105 transition duration-300">
+      {children}
+    </div>
+  );
+}
+
+// OUTPUT CARD
+function OutputCard({
+  title,
+  icon,
+  color,
+  children,
+  onClick,
+}) {
+  return (
+    <div
+      onClick={onClick}
+      className={`cursor-pointer bg-gradient-to-br ${color} p-8 rounded-[32px] border border-white/10 hover:scale-105 hover:shadow-2xl transition duration-300`}
+    >
+      <div className="mb-5">{icon}</div>
+
+      <h2 className="text-3xl font-bold mb-5">
+        {title}
+      </h2>
+
+      {children}
+    </div>
+  );
+}
+
+// PROGRESS BAR
+function ProgressBar({ value, color }) {
+  return (
+    <div className="w-full bg-black/30 rounded-full h-5 overflow-hidden">
+      <div
+        className={`${color} h-5 rounded-full transition-all duration-500`}
+        style={{ width: `${value}%` }}
+      ></div>
+    </div>
+  );
+}
